@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from './supabaseClient';
 
 const TRAINING_PLAN = [
@@ -405,6 +405,7 @@ function App() {
   const [expandedWeek, setExpandedWeek] = useState(1);
   const [showSim, setShowSim] = useState({});
   const [saving, setSaving] = useState(false);
+  const saveTimers = useRef({});
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -428,8 +429,22 @@ function App() {
       { completed: false, time: '', rpe: '', notes: '' };
   };
 
-  const update = async (week, day, field, value) => {
+  const saveWorkoutToDb = async (newData, existingId) => {
     setSaving(true);
+    try {
+      if (existingId) {
+        await supabase.from('workouts').update(newData).eq('id', existingId);
+      } else {
+        const { data } = await supabase.from('workouts').insert(newData).select().single();
+        if (data) setWorkouts(prev => prev.map(w =>
+          w.runner === data.runner && w.week === data.week && w.day === data.day ? data : w
+        ).concat(prev.some(w => w.runner === data.runner && w.week === data.week && w.day === data.day) ? [] : [data]));
+      }
+    } catch (e) { console.error('Save error:', e); }
+    setSaving(false);
+  };
+
+  const update = (week, day, field, value) => {
     const existing = workouts.find(w => w.runner === activeRunner && w.week === week && w.day === day);
     const newData = {
       runner: activeRunner, week, day,
@@ -439,16 +454,28 @@ function App() {
       notes: field === 'notes' ? value : (existing?.notes || ''),
       updated_at: new Date().toISOString()
     };
-    try {
-      if (existing?.id) {
-        await supabase.from('workouts').update(newData).eq('id', existing.id);
-        setWorkouts(prev => prev.map(w => w.id === existing.id ? { ...w, ...newData } : w));
-      } else {
-        const { data } = await supabase.from('workouts').insert(newData).select().single();
-        if (data) setWorkouts(prev => [...prev, data]);
-      }
-    } catch (e) { console.error('Save error:', e); }
-    setSaving(false);
+
+    // Update local state immediately for responsive typing
+    if (existing?.id) {
+      setWorkouts(prev => prev.map(w => w.id === existing.id ? { ...w, ...newData } : w));
+    } else {
+      setWorkouts(prev => {
+        const idx = prev.findIndex(w => w.runner === activeRunner && w.week === week && w.day === day);
+        if (idx >= 0) return prev.map((w, i) => i === idx ? { ...w, ...newData } : w);
+        return [...prev, newData];
+      });
+    }
+
+    // Debounce the database save (immediate for checkbox toggles)
+    const timerKey = `workout-${activeRunner}-${week}-${day}`;
+    clearTimeout(saveTimers.current[timerKey]);
+    if (field === 'completed') {
+      saveWorkoutToDb(newData, existing?.id);
+    } else {
+      saveTimers.current[timerKey] = setTimeout(() => {
+        saveWorkoutToDb(newData, existing?.id);
+      }, 500);
+    }
   };
 
   const getBench = (runner, week) => {
@@ -456,8 +483,22 @@ function App() {
       { total_time: '', avg_split: '', splits: ['','','','','','','',''], notes: '' };
   };
 
-  const updateBench = async (week, field, value) => {
+  const saveBenchToDb = async (newData, existingId) => {
     setSaving(true);
+    try {
+      if (existingId) {
+        await supabase.from('benchmarks').update(newData).eq('id', existingId);
+      } else {
+        const { data } = await supabase.from('benchmarks').insert(newData).select().single();
+        if (data) setBenchmarks(prev => prev.map(b =>
+          b.runner === data.runner && b.week === data.week ? data : b
+        ).concat(prev.some(b => b.runner === data.runner && b.week === data.week) ? [] : [data]));
+      }
+    } catch (e) { console.error('Save error:', e); }
+    setSaving(false);
+  };
+
+  const updateBench = (week, field, value) => {
     const existing = benchmarks.find(b => b.runner === activeRunner && b.week === week);
     const newData = {
       runner: activeRunner, week,
@@ -467,23 +508,31 @@ function App() {
       notes: field === 'notes' ? value : (existing?.notes || ''),
       updated_at: new Date().toISOString()
     };
-    try {
-      if (existing?.id) {
-        await supabase.from('benchmarks').update(newData).eq('id', existing.id);
-        setBenchmarks(prev => prev.map(b => b.id === existing.id ? { ...b, ...newData } : b));
-      } else {
-        const { data } = await supabase.from('benchmarks').insert(newData).select().single();
-        if (data) setBenchmarks(prev => [...prev, data]);
-      }
-    } catch (e) { console.error('Save error:', e); }
-    setSaving(false);
+
+    // Update local state immediately
+    if (existing?.id) {
+      setBenchmarks(prev => prev.map(b => b.id === existing.id ? { ...b, ...newData } : b));
+    } else {
+      setBenchmarks(prev => {
+        const idx = prev.findIndex(b => b.runner === activeRunner && b.week === week);
+        if (idx >= 0) return prev.map((b, i) => i === idx ? { ...b, ...newData } : b);
+        return [...prev, newData];
+      });
+    }
+
+    // Debounce the database save
+    const timerKey = `bench-${activeRunner}-${week}`;
+    clearTimeout(saveTimers.current[timerKey]);
+    saveTimers.current[timerKey] = setTimeout(() => {
+      saveBenchToDb(newData, existing?.id);
+    }, 500);
   };
 
-  const updateSplit = async (week, index, value) => {
+  const updateSplit = (week, index, value) => {
     const b = getBench(activeRunner, week);
     const s = [...(b.splits || ['','','','','','','',''])];
     s[index] = value;
-    await updateBench(week, 'splits', s);
+    updateBench(week, 'splits', s);
   };
 
   const getStats = (runner) => {
