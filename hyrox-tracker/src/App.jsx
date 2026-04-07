@@ -673,28 +673,28 @@ function App() {
   const simon = getStats('simon'), julian = getStats('julian');
 
   return (
-    <div className="min-h-screen text-gray-100 bg-slate-950 bg-[radial-gradient(ellipse_at_top,_rgba(249,115,22,0.08),_transparent_50%),radial-gradient(ellipse_at_bottom,_rgba(6,182,212,0.08),_transparent_50%)]">
-      <header className="bg-slate-900/70 backdrop-blur-xl border-b border-white/5 sticky top-0 z-10 shadow-lg shadow-black/20">
+    <div className="min-h-screen text-gray-100 bg-slate-950 bg-[radial-gradient(ellipse_at_top_left,_rgba(198,249,31,0.10),_transparent_55%),radial-gradient(ellipse_at_top_right,_rgba(249,115,22,0.08),_transparent_55%),radial-gradient(ellipse_at_bottom,_rgba(6,182,212,0.06),_transparent_55%)]">
+      <header className="bg-slate-950/70 backdrop-blur-2xl border-b border-white/[0.06] sticky top-0 z-10 shadow-2xl shadow-black/40">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent tracking-tight">HYROX</h1>
-              <p className="text-xs text-gray-500">24-Week Program</p>
+              <h1 className="text-2xl font-black bg-gradient-to-r from-[#c6f91f] via-[#d8ff4a] to-orange-400 bg-clip-text text-transparent tracking-tighter drop-shadow-[0_0_25px_rgba(198,249,31,0.25)]">HYROX</h1>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mt-0.5">24-Week Program</p>
             </div>
             {saving && <div className="text-xs text-gray-500 animate-pulse">Saving…</div>}
             <div className="flex items-center gap-2 flex-wrap justify-end">
-              <button onClick={() => setActiveRunner('simon')} className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${activeRunner === 'simon' ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-slate-900 shadow-lg shadow-orange-500/30' : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10'}`}>
-                Simon <span className="text-xs opacity-75 ml-1">{simon.pct}%</span>
+              <button onClick={() => setActiveRunner('simon')} className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeRunner === 'simon' ? 'bg-gradient-to-br from-orange-300 to-orange-600 text-slate-950 shadow-[0_0_30px_-5px_rgba(249,115,22,0.6)] ring-1 ring-orange-300/50' : 'bg-white/[0.04] text-gray-300 border border-white/10 hover:bg-white/10 hover:border-white/20'}`}>
+                Simon <span className="text-xs opacity-70 ml-1 font-mono">{simon.pct}%</span>
               </button>
-              <button onClick={() => setActiveRunner('julian')} className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${activeRunner === 'julian' ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 text-slate-900 shadow-lg shadow-cyan-500/30' : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10'}`}>
-                Julian <span className="text-xs opacity-75 ml-1">{julian.pct}%</span>
+              <button onClick={() => setActiveRunner('julian')} className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${activeRunner === 'julian' ? 'bg-gradient-to-br from-cyan-300 to-cyan-600 text-slate-950 shadow-[0_0_30px_-5px_rgba(6,182,212,0.6)] ring-1 ring-cyan-300/50' : 'bg-white/[0.04] text-gray-300 border border-white/10 hover:bg-white/10 hover:border-white/20'}`}>
+                Julian <span className="text-xs opacity-70 ml-1 font-mono">{julian.pct}%</span>
               </button>
             </div>
           </div>
           {/* Desktop tabs (hidden on mobile — bottom nav handles small screens) */}
           <div className="hidden sm:flex gap-2 mt-4">
             {['plan', 'benchmarks', 'compare'].map(t => (
-              <button key={t} onClick={() => setActiveTab(t)} className={`px-4 py-1.5 text-sm rounded-lg transition-all ${activeTab === t ? 'bg-white/10 text-white border border-white/10' : 'text-gray-500 hover:text-gray-300'}`}>
+              <button key={t} onClick={() => setActiveTab(t)} className={`px-4 py-1.5 text-sm rounded-lg transition-all ${activeTab === t ? 'bg-white/[0.08] text-white border border-[#c6f91f]/20 shadow-[0_0_15px_-3px_rgba(198,249,31,0.3)]' : 'text-gray-500 hover:text-gray-300'}`}>
                 {t === 'plan' ? 'Training' : t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
             ))}
@@ -705,15 +705,16 @@ function App() {
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24 sm:pb-6">
         {activeTab === 'plan' && (
           <div className="space-y-4">
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
-              <div className="flex justify-between items-baseline mb-3">
-                <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Progress</span>
-                <span className={`text-lg font-bold ${activeRunner === 'simon' ? 'text-orange-400' : 'text-cyan-400'}`}>
-                  {getStats(activeRunner).done}<span className="text-gray-600 text-sm">/{getStats(activeRunner).total}</span>
-                </span>
+            <div className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-5 shadow-2xl shadow-black/40">
+              <div className="flex justify-between items-baseline mb-4">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">Progress</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-3xl font-black text-white tracking-tight">{getStats(activeRunner).pct}<span className="text-base text-gray-600">%</span></span>
+                  <span className="text-xs text-gray-600 font-mono">· {getStats(activeRunner).done}/{getStats(activeRunner).total}</span>
+                </div>
               </div>
-              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-700 ${activeRunner === 'simon' ? 'bg-gradient-to-r from-orange-400 to-orange-600 shadow-lg shadow-orange-500/50' : 'bg-gradient-to-r from-cyan-400 to-cyan-600 shadow-lg shadow-cyan-500/50'}`}
+              <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-700 ${activeRunner === 'simon' ? 'bg-gradient-to-r from-[#c6f91f] via-orange-400 to-orange-600 shadow-[0_0_20px_rgba(198,249,31,0.5)]' : 'bg-gradient-to-r from-[#c6f91f] via-cyan-400 to-cyan-600 shadow-[0_0_20px_rgba(198,249,31,0.5)]'}`}
                   style={{ width: `${getStats(activeRunner).pct}%` }} />
               </div>
             </div>
@@ -735,7 +736,7 @@ function App() {
                     <div className="flex items-center gap-3">
                       <div className="flex gap-1.5">
                         {wk.workouts.map((w,i) => (
-                          <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${getData(activeRunner, wk.week, w.day).completed ? 'bg-green-400 shadow-md shadow-green-400/50' : 'bg-white/10'}`} />
+                          <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${getData(activeRunner, wk.week, w.day).completed ? 'bg-[#c6f91f] shadow-[0_0_8px_rgba(198,249,31,0.8)]' : 'bg-white/10'}`} />
                         ))}
                       </div>
                       <span className="text-xs text-gray-500 font-mono">{done}/{wk.workouts.length}</span>
@@ -751,17 +752,17 @@ function App() {
                         const d = getData(activeRunner, wk.week, wo.day);
                         const sk = `${wk.week}-${wo.day}`;
                         return (
-                          <div key={wo.day} className={`p-5 border-b border-white/5 last:border-0 transition-colors ${d.completed ? 'bg-green-500/[0.03]' : ''}`}>
+                          <div key={wo.day} className={`p-5 border-b border-white/5 last:border-0 transition-colors ${d.completed ? 'bg-[#c6f91f]/[0.03]' : ''}`}>
                             <div className="flex items-start gap-3">
                               <button onClick={() => update(wk.week, wo.day, 'completed', !d.completed)}
-                                className={`mt-1 w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${d.completed ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-400 shadow-lg shadow-green-500/30' : 'border-white/20 hover:border-white/40'}`}>
-                                {d.completed && <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                className={`mt-1 w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${d.completed ? 'bg-[#c6f91f] border-[#c6f91f] shadow-[0_0_20px_-2px_rgba(198,249,31,0.7)]' : 'border-white/20 hover:border-[#c6f91f]/60'}`}>
+                                {d.completed && <svg className="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>}
                               </button>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap mb-1.5">
                                   <span className={`text-xs font-bold uppercase tracking-wider ${pc.text}`}>Day {wo.day}</span>
                                   <span className="font-semibold text-white">{wo.title}</span>
-                                  {wo.isBenchmark && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-yellow-500/10 text-yellow-300 border border-yellow-500/20 rounded-md font-semibold">Benchmark</span>}
+                                  {wo.isBenchmark && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-[#c6f91f]/10 text-[#c6f91f] border border-[#c6f91f]/30 rounded-md font-bold shadow-[0_0_12px_-2px_rgba(198,249,31,0.4)]">Benchmark</span>}
                                   {wo.isSimulation && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-purple-500/10 text-purple-300 border border-purple-500/20 rounded-md font-semibold">Sim</span>}
                                 </div>
                                 <p className="text-sm text-cyan-300 mb-1 font-medium">{wo.duration}</p>
@@ -833,7 +834,7 @@ function App() {
 
         {activeTab === 'benchmarks' && (
           <div className="space-y-6">
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
+            <div className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-5 shadow-2xl shadow-black/40">
               <h2 className="text-lg font-bold text-orange-500 mb-2">Benchmarks</h2>
               <p className="text-sm text-gray-400">Track simulation times to measure progress</p>
             </div>
@@ -841,7 +842,7 @@ function App() {
               const b = getBench(activeRunner, w);
               const wk = TRAINING_PLAN.find(x => x.week === w);
               return (
-                <div key={w} className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
+                <div key={w} className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-5 shadow-2xl shadow-black/40">
                   <div className="mb-4">
                     <span className="text-lg font-bold text-cyan-500">Week {w}</span>
                     <span className="text-gray-400 ml-2">{wk?.type || wk?.phaseName}</span>
@@ -883,7 +884,7 @@ function App() {
 
         {activeTab === 'compare' && (
           <div className="space-y-6">
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
+            <div className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-5 shadow-2xl shadow-black/40">
               <h2 className="text-lg font-bold text-orange-500 mb-4">Simon vs Julian</h2>
               <div className="space-y-4">
                 <div>
@@ -891,8 +892,8 @@ function App() {
                     <span className="text-orange-500 font-medium">Simon</span>
                     <span className="text-gray-400">{simon.done}/{simon.total} ({simon.pct}%)</span>
                   </div>
-                  <div className="h-3 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-orange-400 to-orange-600 shadow-lg shadow-orange-500/50 transition-all duration-700" style={{width:`${simon.pct}%`}} />
+                  <div className="h-3 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#c6f91f] via-orange-400 to-orange-600 shadow-[0_0_20px_rgba(198,249,31,0.5)] transition-all duration-700" style={{width:`${simon.pct}%`}} />
                   </div>
                 </div>
                 <div>
@@ -900,14 +901,14 @@ function App() {
                     <span className="text-cyan-400 font-medium">Julian</span>
                     <span className="text-gray-400">{julian.done}/{julian.total} ({julian.pct}%)</span>
                   </div>
-                  <div className="h-3 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-cyan-400 to-cyan-600 shadow-lg shadow-cyan-500/50 transition-all duration-700" style={{width:`${julian.pct}%`}} />
+                  <div className="h-3 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#c6f91f] via-cyan-400 to-cyan-600 shadow-[0_0_20px_rgba(198,249,31,0.5)] transition-all duration-700" style={{width:`${julian.pct}%`}} />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
+            <div className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-5 shadow-2xl shadow-black/40">
               <h3 className="font-bold text-cyan-400 mb-4">Benchmark Times</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -931,7 +932,7 @@ function App() {
               </div>
             </div>
 
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
+            <div className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-5 shadow-2xl shadow-black/40">
               <h3 className="font-bold text-cyan-400 mb-4">Weekly Progress</h3>
               <div className="space-y-2 max-h-80 overflow-y-auto">
                 {TRAINING_PLAN.map(wk => {
@@ -980,7 +981,7 @@ function App() {
             return (
               <button key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex flex-col items-center gap-1 py-2 ${isActive ? 'text-orange-500' : 'text-gray-400'}`}>
+                className={`flex flex-col items-center gap-1 py-3 transition-colors ${isActive ? 'text-[#c6f91f] drop-shadow-[0_0_8px_rgba(198,249,31,0.6)]' : 'text-gray-500'}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                 </svg>
