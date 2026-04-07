@@ -488,6 +488,57 @@ const BENCHMARK_WEEKS = [4, 7, 10, 14, 17, 19, 21, 23];
 
 const TOTAL_WEEKS = 24;
 
+const LOADING_MESSAGES = [
+  "Chalking up…",
+  "Racking the sled…",
+  "Inflating wall balls…",
+  "Counting burpees…",
+  "Sharpening ski erg handles…",
+  "Loading 100kg of sandbags…",
+  "Warming up the rower…",
+  "Measuring 1km lanes…",
+  "Taping the lunge corridor…",
+  "Hydrating…",
+];
+
+function LoadingScreen() {
+  const [msgIdx, setMsgIdx] = useState(() => Math.floor(Math.random() * LOADING_MESSAGES.length));
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const m = setInterval(() => setMsgIdx(i => (i + 1) % LOADING_MESSAGES.length), 700);
+    const p = setInterval(() => setProgress(v => (v >= 95 ? 95 : v + Math.random() * 12)), 180);
+    return () => { clearInterval(m); clearInterval(p); };
+  }, []);
+  return (
+    <div className="min-h-screen text-gray-100 bg-slate-950 bg-[radial-gradient(ellipse_at_top_left,_rgba(198,249,31,0.12),_transparent_55%),radial-gradient(ellipse_at_top_right,_rgba(249,115,22,0.10),_transparent_55%),radial-gradient(ellipse_at_bottom,_rgba(6,182,212,0.08),_transparent_55%)] flex items-center justify-center px-6">
+      <div className="w-full max-w-md text-center">
+        <div className="relative inline-block mb-8">
+          <h1 className="text-7xl font-black bg-gradient-to-r from-[#c6f91f] via-[#d8ff4a] to-orange-400 bg-clip-text text-transparent tracking-tighter drop-shadow-[0_0_40px_rgba(198,249,31,0.4)] animate-pulse">
+            HYROX
+          </h1>
+          <div className="absolute -inset-x-8 -inset-y-4 bg-[#c6f91f]/5 blur-3xl -z-10 rounded-full" />
+        </div>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold mb-10">24-Week Program</p>
+
+        <div className="h-1.5 w-full bg-white/[0.06] rounded-full overflow-hidden mb-4 shadow-inner">
+          <div className="h-full bg-gradient-to-r from-[#c6f91f] via-orange-400 to-orange-600 shadow-[0_0_20px_rgba(198,249,31,0.7)] rounded-full transition-all duration-200 ease-out"
+            style={{ width: `${progress}%` }} />
+        </div>
+
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-400 font-medium min-h-[1.5rem]">
+          <svg className="w-4 h-4 text-[#c6f91f] animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
+          </svg>
+          <span key={msgIdx} className="animate-[fadeIn_0.4s_ease-out]">{LOADING_MESSAGES[msgIdx]}</span>
+        </div>
+
+        <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [activeRunner, setActiveRunner] = useState(() => {
     try {
@@ -660,14 +711,7 @@ function App() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <div className="text-cyan-400">Loading...</div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   const simon = getStats('simon'), julian = getStats('julian');
