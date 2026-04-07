@@ -489,8 +489,20 @@ const BENCHMARK_WEEKS = [4, 7, 10, 14, 17, 19, 21, 23];
 const TOTAL_WEEKS = 24;
 
 function App() {
-  const [activeRunner, setActiveRunner] = useState('simon');
-  const [activeTab, setActiveTab] = useState('plan');
+  const [activeRunner, setActiveRunner] = useState(() => {
+    try {
+      const saved = localStorage.getItem('activeRunner');
+      return saved === 'julian' || saved === 'simon' ? saved : 'simon';
+    } catch { return 'simon'; }
+  });
+  useEffect(() => { try { localStorage.setItem('activeRunner', activeRunner); } catch {} }, [activeRunner]);
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const saved = localStorage.getItem('activeTab');
+      return ['plan','benchmarks','compare'].includes(saved) ? saved : 'plan';
+    } catch { return 'plan'; }
+  });
+  useEffect(() => { try { localStorage.setItem('activeTab', activeTab); } catch {} }, [activeTab]);
   const [workouts, setWorkouts] = useState([]);
   const [benchmarks, setBenchmarks] = useState([]);
   const [loading, setLoading] = useState(true);
