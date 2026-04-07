@@ -516,13 +516,23 @@ function pickUnit(str, unit) {
 }
 
 function App() {
-  const today = getTodayWeekDay();
   const [activeRunner, setActiveRunner] = useState('simon');
   const [activeTab, setActiveTab] = useState('plan');
   const [workouts, setWorkouts] = useState([]);
   const [benchmarks, setBenchmarks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedWeek, setExpandedWeek] = useState(today.week);
+  const [expandedWeek, setExpandedWeek] = useState(() => {
+    try {
+      const saved = parseInt(localStorage.getItem('expandedWeek'), 10);
+      return Number.isFinite(saved) && saved >= 1 && saved <= TOTAL_WEEKS ? saved : 1;
+    } catch { return 1; }
+  });
+  useEffect(() => {
+    try {
+      if (expandedWeek == null) localStorage.removeItem('expandedWeek');
+      else localStorage.setItem('expandedWeek', String(expandedWeek));
+    } catch {}
+  }, [expandedWeek]);
   const [showSim, setShowSim] = useState({});
   const [saving, setSaving] = useState(false);
   const [unitSystem, setUnitSystem] = useState(() => {
@@ -532,14 +542,6 @@ function App() {
     try { localStorage.setItem('unitSystem', unitSystem); } catch {}
   }, [unitSystem]);
   const saveTimers = useRef({});
-
-  const goToToday = () => {
-    setActiveTab('plan');
-    setExpandedWeek(today.week);
-    setTimeout(() => {
-      document.getElementById(`week-${today.week}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
-  };
 
   const u = (s) => pickUnit(s, unitSystem);
 
@@ -700,14 +702,10 @@ function App() {
           <div className="flex items-center justify-between gap-2">
             <div>
               <h1 className="text-2xl font-bold text-orange-500">HYROX</h1>
-              <p className="text-xs text-gray-400">Week {today.week} · Day {today.day}</p>
+              <p className="text-xs text-gray-400">24-Week Program</p>
             </div>
             {saving && <div className="text-xs text-gray-500">Saving...</div>}
             <div className="flex items-center gap-2 flex-wrap justify-end">
-              <button onClick={goToToday} title="Jump to today's workout"
-                className="px-3 py-2 rounded-lg text-sm font-medium bg-slate-700 hover:bg-slate-600 text-gray-200">
-                Today
-              </button>
               <button onClick={() => setUnitSystem(unitSystem === 'metric' ? 'imperial' : 'metric')}
                 title="Toggle units" aria-label="Toggle units"
                 className="px-3 py-2 rounded-lg text-xs font-mono bg-slate-700 hover:bg-slate-600 text-gray-200">
@@ -753,16 +751,14 @@ function App() {
               const exp = expandedWeek === wk.week;
               const done = wk.workouts.filter(w => getData(activeRunner, wk.week, w.day).completed).length;
 
-              const isCurrentWeek = wk.week === today.week;
               return (
-                <div key={wk.week} id={`week-${wk.week}`} className={`bg-slate-800 rounded-lg overflow-hidden ${isCurrentWeek ? 'ring-2 ring-yellow-400/60' : ''}`}>
+                <div key={wk.week} className="bg-slate-800 rounded-lg overflow-hidden">
                   <button onClick={() => setExpandedWeek(exp ? null : wk.week)}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-700/50">
                     <div className="flex items-center gap-3">
                       <span className={`text-lg font-bold ${pc.text}`}>W{wk.week}</span>
                       <span className="text-gray-300">{wk.phaseName}</span>
                       {wk.type && <span className={`text-xs px-2 py-0.5 rounded ${pc.bg} text-slate-900`}>{wk.type}</span>}
-                      {isCurrentWeek && <span className="text-xs px-2 py-0.5 rounded bg-yellow-400 text-slate-900 font-semibold">TODAY</span>}
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex gap-1">
@@ -782,9 +778,8 @@ function App() {
                       {wk.workouts.map((wo) => {
                         const d = getData(activeRunner, wk.week, wo.day);
                         const sk = `${wk.week}-${wo.day}`;
-                        const isToday = isCurrentWeek && wo.day === today.day;
                         return (
-                          <div key={wo.day} className={`p-4 border-b border-slate-700 last:border-0 ${d.completed ? 'bg-green-500/5' : ''} ${isToday ? 'bg-yellow-400/5 border-l-4 border-l-yellow-400' : ''}`}>
+                          <div key={wo.day} className={`p-4 border-b border-slate-700 last:border-0 ${d.completed ? 'bg-green-500/5' : ''}`}>
                             <div className="flex items-start gap-3">
                               <button onClick={() => update(wk.week, wo.day, 'completed', !d.completed)}
                                 className={`mt-1 w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${d.completed ? 'bg-green-500 border-green-500' : 'border-gray-500 hover:border-gray-400'}`}>
@@ -796,7 +791,6 @@ function App() {
                                   <span className="font-semibold text-white">{wo.title}</span>
                                   {wo.isBenchmark && <span className="text-xs px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">BENCHMARK</span>}
                                   {wo.isSimulation && <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded">SIM</span>}
-                                  {isToday && <span className="text-xs px-1.5 py-0.5 bg-yellow-400 text-slate-900 rounded font-semibold">TODAY</span>}
                                 </div>
                                 <p className="text-sm text-cyan-400 mb-1">{u(wo.duration)}</p>
                                 <p className="text-sm text-gray-400">{wo.description}</p>
@@ -1004,17 +998,16 @@ function App() {
 
       {/* Mobile bottom tab nav */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 z-20 pb-[env(safe-area-inset-bottom)]">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-3">
           {[
             { id: 'plan', label: 'Training', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
             { id: 'benchmarks', label: 'Bench', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
-            { id: 'compare', label: 'Compare', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' },
-            { id: 'today', label: 'Today', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', action: goToToday }
+            { id: 'compare', label: 'Compare', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' }
           ].map(item => {
-            const isActive = item.id !== 'today' && activeTab === item.id;
+            const isActive = activeTab === item.id;
             return (
               <button key={item.id}
-                onClick={() => item.action ? item.action() : setActiveTab(item.id)}
+                onClick={() => setActiveTab(item.id)}
                 className={`flex flex-col items-center gap-1 py-2 ${isActive ? 'text-orange-500' : 'text-gray-400'}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
