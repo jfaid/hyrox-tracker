@@ -151,14 +151,15 @@ const TRAINING_PLAN = [
     workouts: [
       { day: 1, title: "Easy Run", duration: "30 min", description: "Recovering from Week 7.", targetRPE: "3" },
       { day: 3, title: "Sharpening", duration: "3 × 1km / 0.62mi", description: "Race pace with FULL 3 min recovery.", targetRPE: "6" },
-      { day: 5, title: "Light Sim", duration: "3 weakest stations", description: "Your 3 weakest stations + 1km runs. 80% effort.", targetRPE: "6-7", isSimulation: true,
+      { day: 5, title: "Light Sim", duration: "3 weakest stations", description: "Your 3 weakest stations + 1km runs (race order: 1km run BEFORE each station). 80% effort.", targetRPE: "6-7", isSimulation: true,
         simDetails: [
+          { station: "Run", reps: "1km", weight: "Easy", notes: "Opening run" },
           { station: "Weakest #1", reps: "Full reps", weight: "Competition", notes: "Focus on technique" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Easy" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
           { station: "Weakest #2", reps: "Full reps", weight: "Competition", notes: "Find efficiency" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Easy" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
           { station: "Weakest #3", reps: "Full reps", weight: "Competition", notes: "Build confidence" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Easy" }
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" }
         ]
       }
     ]
@@ -179,9 +180,18 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "45 min", description: "Building endurance.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "30 min", description: "Recovery pace.", targetRPE: "3" },
       { day: 4, title: "1km Repeats", duration: "7 × 1km / 0.62mi", description: "60 sec rest. Volume building.", targetRPE: "5-6" },
-      { day: 6, title: "5-Station Sim", duration: "Benchmark", description: "Compare to Week 5.", targetRPE: "7-8", isBenchmark: true, isSimulation: true,
+      { day: 6, title: "5-Station Sim", duration: "Benchmark", description: "First 5 stations in race order. Compare to Week 5.", targetRPE: "7-8", isBenchmark: true, isSimulation: true,
         simDetails: [
-          { station: "Same as Week 5", reps: "Full", weight: "Competition", notes: "BEAT YOUR WEEK 5 TIME" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "SkiErg", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "BEAT YOUR WEEK 5 TIME" }
         ]
       }
     ]
@@ -200,13 +210,14 @@ const TRAINING_PLAN = [
     workouts: [
       { day: 1, title: "Easy Run", duration: "35 min", description: "Absorbing training.", targetRPE: "3" },
       { day: 3, title: "1km Repeats", duration: "4 × 1km", description: "90 sec rest. Controlled.", targetRPE: "5" },
-      { day: 5, title: "Light Sim", duration: "3 stations", description: "80% effort. Don't chase times.", targetRPE: "6", isSimulation: true,
+      { day: 5, title: "Light Sim", duration: "3 stations", description: "Stations 5→6→8 in race order. 80% effort. Don't chase times.", targetRPE: "6", isSimulation: true,
         simDetails: [
+          { station: "Run", reps: "1km", weight: "Easy", notes: "Opening run" },
           { station: "Row", reps: "1000m", weight: "Easy", notes: "80%" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Farmers", reps: "200m", weight: "Competition", notes: "" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Wall Balls", reps: "75 reps", weight: "Competition", notes: "Reduced" }
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
+          { station: "Wall Balls", reps: "75 reps", weight: "6kg (M) / 4kg (W)", notes: "Reduced volume" }
         ]
       }
     ]
@@ -226,9 +237,24 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "55 min", description: "Long easy effort.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "30 min", description: "Recovery.", targetRPE: "3" },
       { day: 4, title: "Race Pace 1kms", duration: "6 × 1km", description: "50 sec rest. Goal race pace.", targetRPE: "6-7" },
-      { day: 6, title: "FULL 8-Station", duration: "Benchmark", description: "Compare to Week 7. Should see SIGNIFICANT improvement.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
+      { day: 6, title: "FULL 8-Station", duration: "Benchmark", description: "Full Hyrox in race order. Compare to Week 7. Should see SIGNIFICANT improvement.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
         simDetails: [
-          { station: "Full Hyrox", reps: "All 8 stations", weight: "Competition", notes: "BEAT WEEK 7 TIME" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "SkiErg", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) / 10kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Wall Balls", reps: "100 reps", weight: "6kg (M) / 4kg (W)", notes: "BEAT WEEK 7 TIME" }
         ]
       }
     ]
@@ -247,16 +273,16 @@ const TRAINING_PLAN = [
     workouts: [
       { day: 1, title: "Easy Run", duration: "40 min", description: "Moderate.", targetRPE: "3-4" },
       { day: 3, title: "1km Repeats", duration: "5 × 1km", description: "60 sec rest. Race pace. Should feel manageable.", targetRPE: "6" },
-      { day: 5, title: "Light Sim", duration: "4 stations", description: "85% effort. Prep for race-specific.", targetRPE: "6-7", isSimulation: true,
+      { day: 5, title: "Light Sim", duration: "4 stations", description: "Stations 2→3→4→5 contiguous in race order. 85% effort. Prep for race-specific.", targetRPE: "6-7", isSimulation: true,
         simDetails: [
-          { station: "Sled Push", reps: "50m", weight: "Competition", notes: "Technique focus" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Sled Pull", reps: "50m", weight: "Competition", notes: "Technique focus" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Lunges", reps: "100m", weight: "Competition", notes: "Your weakness" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Wall Balls", reps: "100 reps", weight: "Competition", notes: "Unbroken 15+" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "Technique focus" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "Technique focus" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "Practice the rhythm" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "Steady stroke rate" }
         ]
       }
     ]
@@ -268,9 +294,24 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "45 min", description: "Steady state.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "25 min", description: "Recovery.", targetRPE: "3" },
       { day: 4, title: "Race Pace 1kms", duration: "6 × 1km", description: "45 sec rest. All at goal race pace.", targetRPE: "6-7" },
-      { day: 6, title: "FULL 8-Station", duration: "Practice execution", description: "Focus on TRANSITIONS - move within 10 sec.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
+      { day: 6, title: "FULL 8-Station", duration: "Practice execution", description: "Full Hyrox in race order. Focus on TRANSITIONS - move within 10 sec.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
         simDetails: [
-          { station: "Full Hyrox", reps: "All 8", weight: "Competition", notes: "PRACTICE TRANSITIONS" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "SkiErg", reps: "1000m", weight: "Competition", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) / 10kg (W)", notes: "Transition <10s" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Wall Balls", reps: "100 reps", weight: "6kg (M) / 4kg (W)", notes: "FINISH" }
         ]
       }
     ]
@@ -281,16 +322,17 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "45 min", description: "Steady.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "25 min", description: "Easy.", targetRPE: "3" },
       { day: 4, title: "Negative Splits", duration: "5 × 1km", description: "50 sec rest. Start slow, finish fast.", targetRPE: "5-7" },
-      { day: 6, title: "Weakness Sim", duration: "4 stations", description: "Extra volume on problem areas.", targetRPE: "7-8", isSimulation: true,
+      { day: 6, title: "Weakness Sim", duration: "4 stations", description: "Extra volume on the usual problem stations: BBJ, Sled Push, Lunges, Wall Balls. Sub in your own if different.", targetRPE: "7-8", isSimulation: true,
         simDetails: [
-          { station: "Your #1 Weakness", reps: "1.5× normal", weight: "Competition", notes: "Build competence" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Your #2 Weakness", reps: "1.5× normal", weight: "Competition", notes: "" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Your #3 Weakness", reps: "1.5× normal", weight: "Competition", notes: "" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Your #4 Weakness", reps: "1.5× normal", weight: "Competition", notes: "" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "Burpee Broad Jumps", reps: "120m (1.5×)", weight: "-", notes: "Build rhythm + breathing" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Push", reps: "75m (1.5×)", weight: "152kg (M) / 102kg (W)", notes: "Drive through hips" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sandbag Lunges", reps: "150m (1.5×)", weight: "20kg (M) / 10kg (W)", notes: "Knee touches every rep" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Wall Balls", reps: "150 reps (1.5×)", weight: "6kg (M) / 4kg (W)", notes: "Sets of 15-20" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" }
         ]
       }
     ]
@@ -301,9 +343,24 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "50 min", description: "Steady state.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "25 min", description: "Recovery.", targetRPE: "3" },
       { day: 4, title: "Race Pace 1kms", duration: "7 × 1km", description: "40 sec rest. Race pace.", targetRPE: "6-7" },
-      { day: 6, title: "FULL TIME TRIAL", duration: "RACE EFFORT", description: "100% EFFORT. This predicts your race time.", targetRPE: "9-10", isBenchmark: true, isSimulation: true,
+      { day: 6, title: "FULL TIME TRIAL", duration: "RACE EFFORT", description: "Full Hyrox at 100% EFFORT in race order. This predicts your race time. RECORD EVERYTHING.", targetRPE: "9-10", isBenchmark: true, isSimulation: true,
         simDetails: [
-          { station: "RACE SIMULATION", reps: "100% EFFORT", weight: "Competition", notes: "RECORD EVERYTHING - this is your predicted race time" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "SkiErg", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) / 10kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Wall Balls", reps: "100 reps", weight: "6kg (M) / 4kg (W)", notes: "PREDICTED RACE TIME" }
         ]
       }
     ]
@@ -313,13 +370,14 @@ const TRAINING_PLAN = [
     workouts: [
       { day: 1, title: "Easy Run", duration: "35 min", description: "Absorb training.", targetRPE: "3" },
       { day: 3, title: "Light Repeats", duration: "4 × 1km", description: "90 sec rest. Comfortable.", targetRPE: "5" },
-      { day: 5, title: "Light Sim", duration: "3 stations", description: "75% effort. Recovery week.", targetRPE: "5-6", isSimulation: true,
+      { day: 5, title: "Light Sim", duration: "3 stations", description: "SkiErg → Row → Wall Balls. 75% effort. Recovery week.", targetRPE: "5-6", isSimulation: true,
         simDetails: [
-          { station: "Ski Erg", reps: "750m", weight: "Easy", notes: "75%" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Easy" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "Opening run" },
+          { station: "SkiErg", reps: "750m", weight: "Easy", notes: "75%" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
           { station: "Row", reps: "750m", weight: "Easy", notes: "75%" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Wall Balls", reps: "50 reps", weight: "Competition", notes: "" }
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
+          { station: "Wall Balls", reps: "50 reps", weight: "6kg (M) / 4kg (W)", notes: "Half volume" }
         ]
       }
     ]
@@ -330,9 +388,24 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "45 min", description: "Steady.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "25 min", description: "Easy.", targetRPE: "3" },
       { day: 4, title: "Race Pace 1kms", duration: "6 × 1km", description: "45 sec rest. Race pace.", targetRPE: "6-7" },
-      { day: 6, title: "FULL 8-Station", duration: "Consistent pacing", description: "All 8 run splits within 15 sec of each other.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
+      { day: 6, title: "FULL 8-Station", duration: "Consistent pacing", description: "Full Hyrox in race order. All 8 run splits within 15 sec of each other.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
         simDetails: [
-          { station: "Full Hyrox", reps: "All 8", weight: "Competition", notes: "CONSISTENT SPLITS - all runs within 15 sec" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #1 - benchmark" },
+          { station: "SkiErg", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #2" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #3" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #4" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #5" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #6" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #7" },
+          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) / 10kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Split #8 - all within 15s" },
+          { station: "Wall Balls", reps: "100 reps", weight: "6kg (M) / 4kg (W)", notes: "" }
         ]
       }
     ]
@@ -345,14 +418,14 @@ const TRAINING_PLAN = [
       { day: 4, title: "Fast Finish", duration: "5 × 1km", description: "45 sec rest. #1-4 race pace. #5 ALL OUT.", targetRPE: "6-9" },
       { day: 6, title: "Back Half Sim", duration: "Stations 5-8", description: "Row → Farmers → Lunges → Wall Balls. Finish strong practice.", targetRPE: "7-8", isSimulation: true,
         simDetails: [
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
           { station: "Row", reps: "1000m", weight: "Competition", notes: "Start here" },
-          { station: "Run", reps: "1km", weight: "-", notes: "" },
-          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) 2×16kg (W)", notes: "No drops" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Shake out grip" },
-          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) 10kg (W)", notes: "THE LEG DESTROYER" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Survive" },
-          { station: "Wall Balls", reps: "100 reps", weight: "9kg (M) 6kg (W)", notes: "FINISH STRONG" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Victory lap" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "No drops" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Shake out grip" },
+          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) / 10kg (W)", notes: "THE LEG DESTROYER" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Survive" },
+          { station: "Wall Balls", reps: "100 reps", weight: "6kg (M) / 4kg (W)", notes: "FINISH STRONG" }
         ]
       }
     ]
@@ -363,9 +436,24 @@ const TRAINING_PLAN = [
       { day: 1, title: "Easy Run", duration: "40 min", description: "Steady.", targetRPE: "3-4" },
       { day: 2, title: "Easy Run", duration: "20 min", description: "Short and easy.", targetRPE: "3" },
       { day: 4, title: "Race Pace 1kms", duration: "5 × 1km", description: "50 sec rest. Should feel CONTROLLED.", targetRPE: "6" },
-      { day: 6, title: "FINAL Full Sim", duration: "Dress rehearsal", description: "EXECUTE YOUR RACE PLAN exactly.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
+      { day: 6, title: "FINAL Full Sim", duration: "Dress rehearsal", description: "Full Hyrox in race order. EXECUTE YOUR RACE PLAN exactly. Same warmup, nutrition, pacing as race day.", targetRPE: "8-9", isBenchmark: true, isSimulation: true,
         simDetails: [
-          { station: "Full Hyrox", reps: "All 8", weight: "Competition", notes: "Same warmup, nutrition, pacing as race day" }
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "Opening run" },
+          { station: "SkiErg", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Push", reps: "50m", weight: "152kg (M) / 102kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sled Pull", reps: "50m", weight: "103kg (M) / 78kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Burpee Broad Jumps", reps: "80m", weight: "-", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Row", reps: "1000m", weight: "Competition", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Farmers Carry", reps: "200m", weight: "2×24kg (M) / 2×16kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Sandbag Lunges", reps: "100m", weight: "20kg (M) / 10kg (W)", notes: "" },
+          { station: "Run", reps: "1km", weight: "Race pace", notes: "" },
+          { station: "Wall Balls", reps: "100 reps", weight: "6kg (M) / 4kg (W)", notes: "DRESS REHEARSAL DONE" }
         ]
       }
     ]
@@ -375,12 +463,14 @@ const TRAINING_PLAN = [
     workouts: [
       { day: 1, title: "Easy Run", duration: "30 min", description: "Stay loose.", targetRPE: "3" },
       { day: 3, title: "Sharpening", duration: "3 × 1km", description: "FULL 3 min recovery. Feel sharp, not tired.", targetRPE: "6" },
-      { day: 5, title: "Mini Sim", duration: "Stay loose", description: "70% effort. Race day soon!", targetRPE: "5", isSimulation: true,
+      { day: 5, title: "Mini Sim", duration: "Stay loose", description: "Touch each modality in race order. 70% effort. Race day soon!", targetRPE: "5", isSimulation: true,
         simDetails: [
-          { station: "Wall Balls", reps: "30 reps", weight: "Competition", notes: "Just move" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Easy" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "Opening run" },
+          { station: "SkiErg", reps: "500m", weight: "Easy", notes: "Loosen shoulders" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
           { station: "Row", reps: "500m", weight: "Easy", notes: "Loosen up" },
-          { station: "Run", reps: "1km", weight: "-", notes: "Easy" },
+          { station: "Run", reps: "1km", weight: "Easy", notes: "" },
+          { station: "Wall Balls", reps: "30 reps", weight: "6kg (M) / 4kg (W)", notes: "Just move" },
           { station: "Mobility", reps: "5 min", weight: "-", notes: "RACE DAY READY! 🏁" }
         ]
       }
