@@ -486,16 +486,62 @@ const PHASE_COLORS = {
 
 const BENCHMARK_WEEKS = [4, 7, 10, 14, 17, 19, 21, 23];
 
+// Week 1 Day 1 (Monday). Anchor for "Today view".
+// Week 7 Day 1 = Mon Apr 6 2026, so Week 1 Day 1 = Mon Feb 23 2026.
+const START_DATE = new Date(2026, 1, 23); // months are 0-indexed: 1 = Feb
+const TOTAL_WEEKS = 24;
+
+function getTodayWeekDay() {
+  const now = new Date();
+  const start = new Date(START_DATE.getFullYear(), START_DATE.getMonth(), START_DATE.getDate());
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.floor((today - start) / 86400000);
+  if (days < 0) return { week: 1, day: 1, beforeStart: true };
+  const week = Math.floor(days / 7) + 1;
+  const day = (days % 7) + 1;
+  if (week > TOTAL_WEEKS) return { week: TOTAL_WEEKS, day: 7, afterEnd: true };
+  return { week, day };
+}
+
+// Strings often encode both units like "20kg / 45lb" or "1km / 0.62mi".
+// Split on " / " and pick the half matching the user's chosen system.
+function pickUnit(str, unit) {
+  if (!str || typeof str !== 'string') return str;
+  const parts = str.split(/\s\/\s/);
+  if (parts.length !== 2) return str;
+  // Heuristic: if neither half contains a unit token, leave it alone (e.g. "M / W" weights).
+  const unitRegex = /\b(kg|lb|km|mi|m|cm|in|ft)\b/i;
+  if (!unitRegex.test(parts[0]) && !unitRegex.test(parts[1])) return str;
+  return unit === 'imperial' ? parts[1] : parts[0];
+}
+
 function App() {
+  const today = getTodayWeekDay();
   const [activeRunner, setActiveRunner] = useState('simon');
   const [activeTab, setActiveTab] = useState('plan');
   const [workouts, setWorkouts] = useState([]);
   const [benchmarks, setBenchmarks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedWeek, setExpandedWeek] = useState(1);
+  const [expandedWeek, setExpandedWeek] = useState(today.week);
   const [showSim, setShowSim] = useState({});
   const [saving, setSaving] = useState(false);
+  const [unitSystem, setUnitSystem] = useState(() => {
+    try { return localStorage.getItem('unitSystem') || 'metric'; } catch { return 'metric'; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem('unitSystem', unitSystem); } catch {}
+  }, [unitSystem]);
   const saveTimers = useRef({});
+
+  const goToToday = () => {
+    setActiveTab('plan');
+    setExpandedWeek(today.week);
+    setTimeout(() => {
+      document.getElementById(`week-${today.week}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
+
+  const u = (s) => pickUnit(s, unitSystem);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -651,22 +697,32 @@ function App() {
     <div className="min-h-screen bg-slate-900 text-gray-100">
       <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <div>
               <h1 className="text-2xl font-bold text-orange-500">HYROX</h1>
-              <p className="text-xs text-gray-400">24-Week Program</p>
+              <p className="text-xs text-gray-400">Week {today.week} · Day {today.day}</p>
             </div>
             {saving && <div className="text-xs text-gray-500">Saving...</div>}
-            <div className="flex gap-2">
-              <button onClick={() => setActiveRunner('simon')} className={`px-4 py-2 rounded-lg font-medium ${activeRunner === 'simon' ? 'bg-orange-500 text-slate-900' : 'bg-slate-700 text-gray-300'}`}>
+            <div className="flex items-center gap-2 flex-wrap justify-end">
+              <button onClick={goToToday} title="Jump to today's workout"
+                className="px-3 py-2 rounded-lg text-sm font-medium bg-slate-700 hover:bg-slate-600 text-gray-200">
+                Today
+              </button>
+              <button onClick={() => setUnitSystem(unitSystem === 'metric' ? 'imperial' : 'metric')}
+                title="Toggle units" aria-label="Toggle units"
+                className="px-3 py-2 rounded-lg text-xs font-mono bg-slate-700 hover:bg-slate-600 text-gray-200">
+                {unitSystem === 'metric' ? 'kg/km' : 'lb/mi'}
+              </button>
+              <button onClick={() => setActiveRunner('simon')} className={`px-3 py-2 rounded-lg text-sm font-medium ${activeRunner === 'simon' ? 'bg-orange-500 text-slate-900' : 'bg-slate-700 text-gray-300'}`}>
                 Simon <span className="text-xs opacity-75">{simon.pct}%</span>
               </button>
-              <button onClick={() => setActiveRunner('julian')} className={`px-4 py-2 rounded-lg font-medium ${activeRunner === 'julian' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-700 text-gray-300'}`}>
+              <button onClick={() => setActiveRunner('julian')} className={`px-3 py-2 rounded-lg text-sm font-medium ${activeRunner === 'julian' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-700 text-gray-300'}`}>
                 Julian <span className="text-xs opacity-75">{julian.pct}%</span>
               </button>
             </div>
           </div>
-          <div className="flex gap-4 mt-4">
+          {/* Desktop tabs (hidden on mobile — bottom nav handles small screens) */}
+          <div className="hidden sm:flex gap-4 mt-4">
             {['plan', 'benchmarks', 'compare'].map(t => (
               <button key={t} onClick={() => setActiveTab(t)} className={`px-3 py-1 text-sm rounded ${activeTab === t ? 'bg-slate-700 text-white' : 'text-gray-400'}`}>
                 {t === 'plan' ? 'Training' : t.charAt(0).toUpperCase() + t.slice(1)}
@@ -676,7 +732,7 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 pb-24 sm:pb-6">
         {activeTab === 'plan' && (
           <div className="space-y-4">
             <div className="bg-slate-800 rounded-lg p-4">
@@ -697,14 +753,16 @@ function App() {
               const exp = expandedWeek === wk.week;
               const done = wk.workouts.filter(w => getData(activeRunner, wk.week, w.day).completed).length;
 
+              const isCurrentWeek = wk.week === today.week;
               return (
-                <div key={wk.week} className="bg-slate-800 rounded-lg overflow-hidden">
-                  <button onClick={() => setExpandedWeek(exp ? null : wk.week)} 
+                <div key={wk.week} id={`week-${wk.week}`} className={`bg-slate-800 rounded-lg overflow-hidden ${isCurrentWeek ? 'ring-2 ring-yellow-400/60' : ''}`}>
+                  <button onClick={() => setExpandedWeek(exp ? null : wk.week)}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-700/50">
                     <div className="flex items-center gap-3">
                       <span className={`text-lg font-bold ${pc.text}`}>W{wk.week}</span>
                       <span className="text-gray-300">{wk.phaseName}</span>
                       {wk.type && <span className={`text-xs px-2 py-0.5 rounded ${pc.bg} text-slate-900`}>{wk.type}</span>}
+                      {isCurrentWeek && <span className="text-xs px-2 py-0.5 rounded bg-yellow-400 text-slate-900 font-semibold">TODAY</span>}
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex gap-1">
@@ -724,8 +782,9 @@ function App() {
                       {wk.workouts.map((wo) => {
                         const d = getData(activeRunner, wk.week, wo.day);
                         const sk = `${wk.week}-${wo.day}`;
+                        const isToday = isCurrentWeek && wo.day === today.day;
                         return (
-                          <div key={wo.day} className={`p-4 border-b border-slate-700 last:border-0 ${d.completed ? 'bg-green-500/5' : ''}`}>
+                          <div key={wo.day} className={`p-4 border-b border-slate-700 last:border-0 ${d.completed ? 'bg-green-500/5' : ''} ${isToday ? 'bg-yellow-400/5 border-l-4 border-l-yellow-400' : ''}`}>
                             <div className="flex items-start gap-3">
                               <button onClick={() => update(wk.week, wo.day, 'completed', !d.completed)}
                                 className={`mt-1 w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${d.completed ? 'bg-green-500 border-green-500' : 'border-gray-500 hover:border-gray-400'}`}>
@@ -737,8 +796,9 @@ function App() {
                                   <span className="font-semibold text-white">{wo.title}</span>
                                   {wo.isBenchmark && <span className="text-xs px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">BENCHMARK</span>}
                                   {wo.isSimulation && <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded">SIM</span>}
+                                  {isToday && <span className="text-xs px-1.5 py-0.5 bg-yellow-400 text-slate-900 rounded font-semibold">TODAY</span>}
                                 </div>
-                                <p className="text-sm text-cyan-400 mb-1">{wo.duration}</p>
+                                <p className="text-sm text-cyan-400 mb-1">{u(wo.duration)}</p>
                                 <p className="text-sm text-gray-400">{wo.description}</p>
                                 <p className="text-xs text-gray-500 mt-1">RPE: {wo.targetRPE}</p>
 
@@ -763,8 +823,8 @@ function App() {
                                             {wo.simDetails.map((s,i) => (
                                               <tr key={i} className="border-b border-slate-700/50 last:border-0">
                                                 <td className="py-1.5 pr-2 text-white font-medium">{s.station}</td>
-                                                <td className="py-1.5 pr-2 text-cyan-400">{s.reps}</td>
-                                                <td className="py-1.5 pr-2 text-gray-400">{s.weight}</td>
+                                                <td className="py-1.5 pr-2 text-cyan-400">{u(s.reps)}</td>
+                                                <td className="py-1.5 pr-2 text-gray-400">{u(s.weight)}</td>
                                                 <td className="py-1.5 text-gray-500">{s.notes}</td>
                                               </tr>
                                             ))}
@@ -936,11 +996,35 @@ function App() {
         )}
       </main>
 
-      <footer className="bg-slate-800 border-t border-slate-700 py-3 mt-8">
+      <footer className="hidden sm:block bg-slate-800 border-t border-slate-700 py-3 mt-8">
         <div className="max-w-4xl mx-auto px-4">
           <p className="text-xs text-gray-500 text-center">1km = 0.62mi • 800m = 0.5mi • 50m = 55yd</p>
         </div>
       </footer>
+
+      {/* Mobile bottom tab nav */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 z-20 pb-[env(safe-area-inset-bottom)]">
+        <div className="grid grid-cols-4">
+          {[
+            { id: 'plan', label: 'Training', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+            { id: 'benchmarks', label: 'Bench', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
+            { id: 'compare', label: 'Compare', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' },
+            { id: 'today', label: 'Today', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', action: goToToday }
+          ].map(item => {
+            const isActive = item.id !== 'today' && activeTab === item.id;
+            return (
+              <button key={item.id}
+                onClick={() => item.action ? item.action() : setActiveTab(item.id)}
+                className={`flex flex-col items-center gap-1 py-2 ${isActive ? 'text-orange-500' : 'text-gray-400'}`}>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                </svg>
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
