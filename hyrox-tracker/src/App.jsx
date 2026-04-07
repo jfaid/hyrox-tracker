@@ -673,28 +673,28 @@ function App() {
   const simon = getStats('simon'), julian = getStats('julian');
 
   return (
-    <div className="min-h-screen bg-slate-900 text-gray-100">
-      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
+    <div className="min-h-screen text-gray-100 bg-slate-950 bg-[radial-gradient(ellipse_at_top,_rgba(249,115,22,0.08),_transparent_50%),radial-gradient(ellipse_at_bottom,_rgba(6,182,212,0.08),_transparent_50%)]">
+      <header className="bg-slate-900/70 backdrop-blur-xl border-b border-white/5 sticky top-0 z-10 shadow-lg shadow-black/20">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div>
-              <h1 className="text-2xl font-bold text-orange-500">HYROX</h1>
-              <p className="text-xs text-gray-400">24-Week Program</p>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent tracking-tight">HYROX</h1>
+              <p className="text-xs text-gray-500">24-Week Program</p>
             </div>
-            {saving && <div className="text-xs text-gray-500">Saving...</div>}
+            {saving && <div className="text-xs text-gray-500 animate-pulse">Saving…</div>}
             <div className="flex items-center gap-2 flex-wrap justify-end">
-              <button onClick={() => setActiveRunner('simon')} className={`px-3 py-2 rounded-lg text-sm font-medium ${activeRunner === 'simon' ? 'bg-orange-500 text-slate-900' : 'bg-slate-700 text-gray-300'}`}>
-                Simon <span className="text-xs opacity-75">{simon.pct}%</span>
+              <button onClick={() => setActiveRunner('simon')} className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${activeRunner === 'simon' ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-slate-900 shadow-lg shadow-orange-500/30' : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10'}`}>
+                Simon <span className="text-xs opacity-75 ml-1">{simon.pct}%</span>
               </button>
-              <button onClick={() => setActiveRunner('julian')} className={`px-3 py-2 rounded-lg text-sm font-medium ${activeRunner === 'julian' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-700 text-gray-300'}`}>
-                Julian <span className="text-xs opacity-75">{julian.pct}%</span>
+              <button onClick={() => setActiveRunner('julian')} className={`px-3 py-2 rounded-xl text-sm font-medium transition-all ${activeRunner === 'julian' ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 text-slate-900 shadow-lg shadow-cyan-500/30' : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10'}`}>
+                Julian <span className="text-xs opacity-75 ml-1">{julian.pct}%</span>
               </button>
             </div>
           </div>
           {/* Desktop tabs (hidden on mobile — bottom nav handles small screens) */}
-          <div className="hidden sm:flex gap-4 mt-4">
+          <div className="hidden sm:flex gap-2 mt-4">
             {['plan', 'benchmarks', 'compare'].map(t => (
-              <button key={t} onClick={() => setActiveTab(t)} className={`px-3 py-1 text-sm rounded ${activeTab === t ? 'bg-slate-700 text-white' : 'text-gray-400'}`}>
+              <button key={t} onClick={() => setActiveTab(t)} className={`px-4 py-1.5 text-sm rounded-lg transition-all ${activeTab === t ? 'bg-white/10 text-white border border-white/10' : 'text-gray-500 hover:text-gray-300'}`}>
                 {t === 'plan' ? 'Training' : t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
             ))}
@@ -705,15 +705,15 @@ function App() {
       <main className="max-w-4xl mx-auto px-4 py-6 pb-24 sm:pb-6">
         {activeTab === 'plan' && (
           <div className="space-y-4">
-            <div className="bg-slate-800 rounded-lg p-4">
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-400">Progress</span>
-                <span className={activeRunner === 'simon' ? 'text-orange-500' : 'text-cyan-500'}>
-                  {getStats(activeRunner).done}/{getStats(activeRunner).total}
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
+              <div className="flex justify-between items-baseline mb-3">
+                <span className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Progress</span>
+                <span className={`text-lg font-bold ${activeRunner === 'simon' ? 'text-orange-400' : 'text-cyan-400'}`}>
+                  {getStats(activeRunner).done}<span className="text-gray-600 text-sm">/{getStats(activeRunner).total}</span>
                 </span>
               </div>
-              <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
-                <div className={`h-full transition-all ${activeRunner === 'simon' ? 'bg-orange-500' : 'bg-cyan-500'}`} 
+              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-700 ${activeRunner === 'simon' ? 'bg-gradient-to-r from-orange-400 to-orange-600 shadow-lg shadow-orange-500/50' : 'bg-gradient-to-r from-cyan-400 to-cyan-600 shadow-lg shadow-cyan-500/50'}`}
                   style={{ width: `${getStats(activeRunner).pct}%` }} />
               </div>
             </div>
@@ -724,74 +724,74 @@ function App() {
               const done = wk.workouts.filter(w => getData(activeRunner, wk.week, w.day).completed).length;
 
               return (
-                <div key={wk.week} className="bg-slate-800 rounded-lg overflow-hidden">
+                <div key={wk.week} className={`bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl shadow-black/20 transition-all ${exp ? 'ring-1 ring-white/10' : 'hover:border-white/10'}`}>
                   <button onClick={() => setExpandedWeek(exp ? null : wk.week)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-700/50">
+                    className="w-full px-5 py-4 flex items-center justify-between hover:bg-white/5 transition-colors">
                     <div className="flex items-center gap-3">
-                      <span className={`text-lg font-bold ${pc.text}`}>W{wk.week}</span>
-                      <span className="text-gray-300">{wk.phaseName}</span>
-                      {wk.type && <span className={`text-xs px-2 py-0.5 rounded ${pc.bg} text-slate-900`}>{wk.type}</span>}
+                      <span className={`text-xl font-bold tracking-tight ${pc.text}`}>W{wk.week}</span>
+                      <span className="text-gray-300 font-medium">{wk.phaseName}</span>
+                      {wk.type && <span className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded-md ${pc.bg} text-slate-900 font-bold shadow-md`}>{wk.type}</span>}
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex gap-1">
+                      <div className="flex gap-1.5">
                         {wk.workouts.map((w,i) => (
-                          <div key={i} className={`w-2 h-2 rounded-full ${getData(activeRunner, wk.week, w.day).completed ? 'bg-green-500' : 'bg-slate-600'}`} />
+                          <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${getData(activeRunner, wk.week, w.day).completed ? 'bg-green-400 shadow-md shadow-green-400/50' : 'bg-white/10'}`} />
                         ))}
                       </div>
-                      <span className="text-sm text-gray-400">{done}/{wk.workouts.length}</span>
-                      <svg className={`w-5 h-5 text-gray-400 transition-transform ${exp ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <span className="text-xs text-gray-500 font-mono">{done}/{wk.workouts.length}</span>
+                      <svg className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${exp ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
                   </button>
 
                   {exp && (
-                    <div className="border-t border-slate-700">
+                    <div className="border-t border-white/5">
                       {wk.workouts.map((wo) => {
                         const d = getData(activeRunner, wk.week, wo.day);
                         const sk = `${wk.week}-${wo.day}`;
                         return (
-                          <div key={wo.day} className={`p-4 border-b border-slate-700 last:border-0 ${d.completed ? 'bg-green-500/5' : ''}`}>
+                          <div key={wo.day} className={`p-5 border-b border-white/5 last:border-0 transition-colors ${d.completed ? 'bg-green-500/[0.03]' : ''}`}>
                             <div className="flex items-start gap-3">
                               <button onClick={() => update(wk.week, wo.day, 'completed', !d.completed)}
-                                className={`mt-1 w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${d.completed ? 'bg-green-500 border-green-500' : 'border-gray-500 hover:border-gray-400'}`}>
+                                className={`mt-1 w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${d.completed ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-400 shadow-lg shadow-green-500/30' : 'border-white/20 hover:border-white/40'}`}>
                                 {d.completed && <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                               </button>
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap mb-1">
-                                  <span className={`text-sm font-medium ${pc.text}`}>D{wo.day}</span>
+                                <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                                  <span className={`text-xs font-bold uppercase tracking-wider ${pc.text}`}>Day {wo.day}</span>
                                   <span className="font-semibold text-white">{wo.title}</span>
-                                  {wo.isBenchmark && <span className="text-xs px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">BENCHMARK</span>}
-                                  {wo.isSimulation && <span className="text-xs px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded">SIM</span>}
+                                  {wo.isBenchmark && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-yellow-500/10 text-yellow-300 border border-yellow-500/20 rounded-md font-semibold">Benchmark</span>}
+                                  {wo.isSimulation && <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-purple-500/10 text-purple-300 border border-purple-500/20 rounded-md font-semibold">Sim</span>}
                                 </div>
-                                <p className="text-sm text-cyan-400 mb-1">{wo.duration}</p>
-                                <p className="text-sm text-gray-400">{wo.description}</p>
-                                <p className="text-xs text-gray-500 mt-1">RPE: {wo.targetRPE}</p>
+                                <p className="text-sm text-cyan-300 mb-1 font-medium">{wo.duration}</p>
+                                <p className="text-sm text-gray-400 leading-relaxed">{wo.description}</p>
+                                <p className="text-xs text-gray-600 mt-2 font-mono">RPE {wo.targetRPE}</p>
 
                                 {wo.simDetails && (
                                   <>
-                                    <button onClick={() => setShowSim(p => ({...p, [sk]: !p[sk]}))} 
-                                      className="mt-2 text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1">
+                                    <button onClick={() => setShowSim(p => ({...p, [sk]: !p[sk]}))}
+                                      className="mt-3 text-xs text-purple-300 hover:text-purple-200 flex items-center gap-1 font-medium transition-colors">
                                       {showSim[sk] ? '▼ Hide' : '▶ Show'} workout details
                                     </button>
                                     {showSim[sk] && (
-                                      <div className="mt-3 bg-slate-900/50 rounded-lg p-3 border border-slate-700 overflow-x-auto">
+                                      <div className="mt-3 bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/5 overflow-x-auto">
                                         <table className="w-full text-xs">
                                           <thead>
-                                            <tr className="text-gray-500 border-b border-slate-700">
-                                              <th className="text-left py-1 pr-2">Station</th>
-                                              <th className="text-left py-1 pr-2">Reps</th>
-                                              <th className="text-left py-1 pr-2">Weight</th>
-                                              <th className="text-left py-1">Notes</th>
+                                            <tr className="text-gray-600 border-b border-white/5 uppercase tracking-wider">
+                                              <th className="text-left py-2 pr-2 font-semibold">Station</th>
+                                              <th className="text-left py-2 pr-2 font-semibold">Reps</th>
+                                              <th className="text-left py-2 pr-2 font-semibold">Weight</th>
+                                              <th className="text-left py-2 font-semibold">Notes</th>
                                             </tr>
                                           </thead>
                                           <tbody>
                                             {wo.simDetails.map((s,i) => (
-                                              <tr key={i} className="border-b border-slate-700/50 last:border-0">
-                                                <td className="py-1.5 pr-2 text-white font-medium">{s.station}</td>
-                                                <td className="py-1.5 pr-2 text-cyan-400">{s.reps}</td>
-                                                <td className="py-1.5 pr-2 text-gray-400">{s.weight}</td>
-                                                <td className="py-1.5 text-gray-500">{s.notes}</td>
+                                              <tr key={i} className="border-b border-white/5 last:border-0">
+                                                <td className="py-2 pr-2 text-white font-medium">{s.station}</td>
+                                                <td className="py-2 pr-2 text-cyan-300">{s.reps}</td>
+                                                <td className="py-2 pr-2 text-gray-400">{s.weight}</td>
+                                                <td className="py-2 text-gray-500">{s.notes}</td>
                                               </tr>
                                             ))}
                                           </tbody>
@@ -801,21 +801,21 @@ function App() {
                                   </>
                                 )}
 
-                                <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
                                   <div>
-                                    <label className="text-xs text-gray-500 block mb-1">Time</label>
+                                    <label className="text-[10px] uppercase tracking-wider text-gray-600 font-semibold block mb-1.5">Time</label>
                                     <input type="text" value={d.time || ''} onChange={e => update(wk.week, wo.day, 'time', e.target.value)}
-                                      placeholder="00:00" className="w-full px-2 py-1.5 text-sm bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500" />
+                                      placeholder="00:00" className="w-full px-3 py-2 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all placeholder:text-gray-700" />
                                   </div>
                                   <div>
-                                    <label className="text-xs text-gray-500 block mb-1">RPE</label>
+                                    <label className="text-[10px] uppercase tracking-wider text-gray-600 font-semibold block mb-1.5">RPE</label>
                                     <input type="number" min="1" max="10" value={d.rpe || ''} onChange={e => update(wk.week, wo.day, 'rpe', e.target.value)}
-                                      className="w-full px-2 py-1.5 text-sm bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500" />
+                                      className="w-full px-3 py-2 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all" />
                                   </div>
                                   <div className="col-span-2">
-                                    <label className="text-xs text-gray-500 block mb-1">Notes</label>
+                                    <label className="text-[10px] uppercase tracking-wider text-gray-600 font-semibold block mb-1.5">Notes</label>
                                     <input type="text" value={d.notes || ''} onChange={e => update(wk.week, wo.day, 'notes', e.target.value)}
-                                      placeholder="How did it feel?" className="w-full px-2 py-1.5 text-sm bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500" />
+                                      placeholder="How did it feel?" className="w-full px-3 py-2 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all placeholder:text-gray-700" />
                                   </div>
                                 </div>
                               </div>
@@ -833,7 +833,7 @@ function App() {
 
         {activeTab === 'benchmarks' && (
           <div className="space-y-6">
-            <div className="bg-slate-800 rounded-lg p-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
               <h2 className="text-lg font-bold text-orange-500 mb-2">Benchmarks</h2>
               <p className="text-sm text-gray-400">Track simulation times to measure progress</p>
             </div>
@@ -841,7 +841,7 @@ function App() {
               const b = getBench(activeRunner, w);
               const wk = TRAINING_PLAN.find(x => x.week === w);
               return (
-                <div key={w} className="bg-slate-800 rounded-lg p-4">
+                <div key={w} className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
                   <div className="mb-4">
                     <span className="text-lg font-bold text-cyan-500">Week {w}</span>
                     <span className="text-gray-400 ml-2">{wk?.type || wk?.phaseName}</span>
@@ -850,12 +850,12 @@ function App() {
                     <div>
                       <label className="text-xs text-gray-500 block mb-1">Total Time</label>
                       <input type="text" value={b.total_time || ''} onChange={e => updateBench(w, 'total_time', e.target.value)}
-                        placeholder="1:30:00" className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500" />
+                        placeholder="1:30:00" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all placeholder:text-gray-700" />
                     </div>
                     <div>
                       <label className="text-xs text-gray-500 block mb-1">Avg Split</label>
                       <input type="text" value={b.avg_split || ''} onChange={e => updateBench(w, 'avg_split', e.target.value)}
-                        placeholder="5:30" className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500" />
+                        placeholder="5:30" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all placeholder:text-gray-700" />
                     </div>
                   </div>
                   <div>
@@ -865,7 +865,7 @@ function App() {
                         <div key={i}>
                           <span className="text-xs text-gray-500">R{i+1}</span>
                           <input type="text" value={(b.splits || [])[i] || ''} onChange={e => updateSplit(w, i, e.target.value)}
-                            placeholder="0:00" className="w-full px-2 py-1 text-sm bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500" />
+                            placeholder="0:00" className="w-full px-2 py-1 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all placeholder:text-gray-700" />
                         </div>
                       ))}
                     </div>
@@ -873,7 +873,7 @@ function App() {
                   <div className="mt-4">
                     <label className="text-xs text-gray-500 block mb-1">Notes</label>
                     <textarea value={b.notes || ''} onChange={e => updateBench(w, 'notes', e.target.value)}
-                      placeholder="How did it go?" rows={2} className="w-full px-3 py-2 text-sm bg-slate-700 border border-slate-600 rounded focus:outline-none focus:border-cyan-500 resize-none" />
+                      placeholder="How did it go?" rows={2} className="w-full px-3 py-2 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all placeholder:text-gray-700 resize-none" />
                   </div>
                 </div>
               );
@@ -883,7 +883,7 @@ function App() {
 
         {activeTab === 'compare' && (
           <div className="space-y-6">
-            <div className="bg-slate-800 rounded-lg p-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
               <h2 className="text-lg font-bold text-orange-500 mb-4">Simon vs Julian</h2>
               <div className="space-y-4">
                 <div>
@@ -891,23 +891,23 @@ function App() {
                     <span className="text-orange-500 font-medium">Simon</span>
                     <span className="text-gray-400">{simon.done}/{simon.total} ({simon.pct}%)</span>
                   </div>
-                  <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-orange-500 transition-all" style={{width:`${simon.pct}%`}} />
+                  <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-orange-400 to-orange-600 shadow-lg shadow-orange-500/50 transition-all duration-700" style={{width:`${simon.pct}%`}} />
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-cyan-500 font-medium">Julian</span>
+                    <span className="text-cyan-400 font-medium">Julian</span>
                     <span className="text-gray-400">{julian.done}/{julian.total} ({julian.pct}%)</span>
                   </div>
-                  <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-cyan-500 transition-all" style={{width:`${julian.pct}%`}} />
+                  <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-cyan-400 to-cyan-600 shadow-lg shadow-cyan-500/50 transition-all duration-700" style={{width:`${julian.pct}%`}} />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-lg p-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
               <h3 className="font-bold text-cyan-400 mb-4">Benchmark Times</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -931,7 +931,7 @@ function App() {
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-lg p-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl shadow-black/20">
               <h3 className="font-bold text-cyan-400 mb-4">Weekly Progress</h3>
               <div className="space-y-2 max-h-80 overflow-y-auto">
                 {TRAINING_PLAN.map(wk => {
@@ -969,7 +969,7 @@ function App() {
       </footer>
 
       {/* Mobile bottom tab nav */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-800 border-t border-slate-700 z-20 pb-[env(safe-area-inset-bottom)]">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-slate-900/80 backdrop-blur-xl border-t border-white/5 z-20 pb-[env(safe-area-inset-bottom)] shadow-2xl shadow-black/40">
         <div className="grid grid-cols-3">
           {[
             { id: 'plan', label: 'Training', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
